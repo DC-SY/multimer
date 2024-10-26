@@ -1,6 +1,10 @@
 import streamlit as st
 import pandas as pd
 import time
+import sqlite3
+
+from annotated_text import annotation, annotated_text
+from streamlit_tags import st_tags
 
 # 设置页面配置为全屏显示
 st.set_page_config(layout="wide")
@@ -11,7 +15,7 @@ if "tasks" not in st.session_state:
 if "current_task" not in st.session_state:
     st.session_state.current_task = None
 if "tags" not in st.session_state:
-    st.session_state.tags = []
+    st.session_state.tags = ["专业课", "英语", "数学", "政治"]
 
 # 左中右布局
 left_col, center_col, right_col = st.columns([1, 2, 1])
@@ -32,7 +36,9 @@ with left_col:
         today_tasks = today_tasks.reset_index().rename(columns={'index': '序号'})
         st.table(today_tasks[['序号', 'task_name', 'time_used']])
     else:
-        st.write("请创建任务")
+        annotated_text(
+            annotation("请创建任务", font_family="Comic Sans MS", border="2px dashed red"),
+        )
 
     # 本周已完成任务
     st.subheader("本周完成的任务")
@@ -42,7 +48,9 @@ with left_col:
         week_tasks = week_tasks.reset_index().rename(columns={'index': '序号'})
         st.table(week_tasks[['weekday', '序号', 'task_name', 'time_used']])
     else:
-        st.write("请创建任务")
+        annotated_text(
+            annotation("请创建任务", font_family="Comic Sans MS", border="2px dashed red"),
+        )
 # 中间：任务计时和管理
 with center_col:
     st.header("多功能任务计时器")
@@ -95,6 +103,11 @@ with right_col:
     today_tasks_created = st.session_state.tasks[st.session_state.tasks['date'] == today][['task_name']]
     st.write(today_tasks_created)
 
-    st.subheader("任务标签")
-    for existing_tag in st.session_state.tags:
-        st.write(f"- {existing_tag}")
+    keywords = st_tags(
+        label='### 任务标签：',
+        text='Press enter to add more',
+        value=st.session_state.tags,
+        suggestions=['five', 'six', 'seven', 'eight', 'nine', 'three', 'eleven', 'ten', 'four'],
+
+        maxtags=4,
+        key='1')
