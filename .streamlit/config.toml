@@ -1,0 +1,14 @@
+[theme]
+primaryColor = "#4CAF50"               # 侧边栏主题颜色
+backgroundColor = "#FFFFFF"            # 主界面背景颜色
+secondaryBackgroundColor = "#F0F2F6"   # 侧边栏背景色
+textColor = "#333333"                  # 文字颜色
+font = "sans serif"
+
+[server]
+headless = true
+port = 8501
+enableCORS = false
+
+[layout]
+wideMode = true
