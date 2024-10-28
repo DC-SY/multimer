@@ -2,7 +2,7 @@ import sqlite3
 from datetime import datetime
 
 # 连接数据库
-conn = sqlite3.connect("tasks.db")
+conn = sqlite3.connect("data/tasks.db")
 cursor = conn.cursor()
 
 # 创建表

@@ -115,7 +115,7 @@ with right_col:
     #     key='1')
     # 连接到SQLite数据库
     def get_db_connection():
-        conn = sqlite3.connect('tasks.db')  # 替换为你的数据库文件路径
+        conn = sqlite3.connect('data/tasks.db')  # 替换为你的数据库文件路径
         conn.row_factory = sqlite3.Row  # 使查询结果可以通过列名访问
         return conn
 
