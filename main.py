@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import streamlit as st
 import pandas as pd
 import time
@@ -66,14 +68,14 @@ with center_col:
     #             st.session_state.tags.append(new_tag)
     #             st.success(f"标签 {new_tag} 已添加")
 
-    # 开始任务
-    if st.button("开始任务") and task_name:
-        st.session_state.current_task = {
-            "task_name": task_name,
-            "tag": tag,
-            "start_time": time.time()
-        }
-        st.info("任务已开始")
+    # # 开始任务
+    # if st.button("开始任务") and task_name:
+    #     st.session_state.current_task = {
+    #         "task_name": task_name,
+    #         "tag": tag,
+    #         "start_time": time.time()
+    #     }
+    #     st.info("任务已开始")
 
     # 显示任务计时和结束按钮
     if st.session_state.current_task:
@@ -99,15 +101,106 @@ with center_col:
 with right_col:
     st.header("任务和标签管理")
     st.markdown('---')
-    st.subheader("今日任务列表")
-    today_tasks_created = st.session_state.tasks[st.session_state.tasks['date'] == today][['task_name']]
-    st.write(today_tasks_created)
+    # st.subheader("今日任务列表")
+    # today_tasks_created = st.session_state.tasks[st.session_state.tasks['date'] == today][['task_name']]
+    # st.write(today_tasks_created)
+    #
+    # keywords = st_tags(
+    #     label='### 任务标签：',
+    #     text='Press enter to add more',
+    #     value=st.session_state.tags,
+    #     suggestions=['five', 'six', 'seven', 'eight', 'nine', 'three', 'eleven', 'ten', 'four'],
+    #
+    #     maxtags=4,
+    #     key='1')
+    # 连接到SQLite数据库
+    def get_db_connection():
+        conn = sqlite3.connect('tasks.db')  # 替换为你的数据库文件路径
+        conn.row_factory = sqlite3.Row  # 使查询结果可以通过列名访问
+        return conn
 
-    keywords = st_tags(
-        label='### 任务标签：',
-        text='Press enter to add more',
-        value=st.session_state.tags,
-        suggestions=['five', 'six', 'seven', 'eight', 'nine', 'three', 'eleven', 'ten', 'four'],
 
-        maxtags=4,
-        key='1')
+    # 初始化数据库（若表不存在则创建）
+    def init_db():
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # 创建表
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS tags (
+                tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                tag_name TEXT NOT NULL UNIQUE,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME,
+                deleted_at DATETIME
+            )
+        """)
+        conn.commit()
+        conn.close()
+
+    # 获取所有标签
+    def get_all_tags():
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM tags WHERE deleted_at IS NULL")
+        tags_ = cursor.fetchall()
+        conn.close()
+        return tags_
+
+    # 添加新标签
+    def add_tag(tag_name):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO tags (tag_name) VALUES (?)", (tag_name,))
+        conn.commit()
+        conn.close()
+
+    # 删除标签（软删除，更新deleted_at字段）
+    def delete_tag(tag_id):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("UPDATE tags SET deleted_at = ? WHERE tag_id = ?", (datetime.now(), tag_id))
+        conn.commit()
+        conn.close()
+
+    # 初始化数据库
+    init_db()
+
+    # 显示标签
+    st.header("现有标签")
+    tags = get_all_tags()
+    for tag in tags:
+        col1, col2 = st.columns([3, 1])
+        col1.write(tag["tag_name"])
+        if col2.button("删除", key=tag["tag_id"]):
+            delete_tag(tag["tag_id"])
+            st.success("标签已删除")
+            time.sleep(1)
+            # st.experimental_rerun()  # 重新加载页面以刷新标签列表
+            st.rerun()  # 重新加载页面以刷新标签列表
+
+    # 添加新标签
+    st.header("添加新标签")
+    # new_tag = st.text_input("标签名称")
+    # 使用 session state 来存储输入框的内容
+    if "input_value" not in st.session_state:
+        st.session_state.input_value = ""
+
+
+    def clear_input():
+        # 清空输入框内容
+        st.session_state.input_value = ""
+
+    # 创建输入框，绑定到 session state
+    new_tag = st.text_input("标签名称", key="input_value", on_change=clear_input)
+    if st.button("添加标签"):
+        if new_tag:
+            try:
+                add_tag(new_tag)
+                st.success("标签添加成功！")
+                time.sleep(1)
+                st.rerun()  # 重新加载页面以刷新标签列表
+            except sqlite3.IntegrityError:
+                st.error("标签已存在！")
+        else:
+            st.warning("请输入标签名称")
