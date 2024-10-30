@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import time
-import os
 
 from components.tag_manager import get_all_tags
 
@@ -27,7 +26,6 @@ timer_placeholder = st.empty()
 if 'start_time' in st.session_state:
     st.write("任务已开始！")
     st.session_state.button_clicked = True  # 禁用开始按钮
-    st.write("按钮已被点击并禁用")
     # 结束任务按钮
     if st.button('结束任务', key=1):
         if 'start_time' in st.session_state:
