@@ -7,7 +7,7 @@ def add_tag(tag_name):
         cursor.execute("INSERT INTO tags (tag_name) VALUES (?)", (tag_name,))
         conn.commit()
 
-def get_tags():
+def get_display_tags():
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM tags WHERE deleted_at IS NULL")
