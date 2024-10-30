@@ -14,3 +14,8 @@ def get_display_tags():
         return cursor.fetchall()
 
 # 可扩展其他函数：update_tag, delete_tag等
+def get_all_tags():
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT tag_name FROM tags WHERE deleted_at IS NULL")
+        return cursor.fetchall()
