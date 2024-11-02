@@ -17,7 +17,7 @@ if 'button_clicked' not in st.session_state:
 task_name = st.text_input("请输入任务名称：")
 
 # 选择数据库中存储的标签
-tags = st.multiselect("选择任务标签：", [tag[0] for tag in get_all_tags()])
+tags = st.selectbox("选择任务标签：", [tag[0] for tag in get_all_tags()], index=None)
 
 # 定义计时器
 # 初始化计时器占位符
