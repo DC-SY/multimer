@@ -15,4 +15,9 @@ def get_display_tasks():
         cursor.execute("SELECT task_name, start_time, end_time, duration, created_at FROM tasks WHERE deleted_at IS NULL")
         return cursor.fetchall()
 
+def get_all_tasks():
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM tasks")
+        return cursor.fetchall()
 # 可扩展其他函数：update_task, delete_task等

@@ -8,17 +8,23 @@ from components.task_manager import add_task
 # Streamlit 页面标题
 st.title("多功能任务计时器")
 
-# 全局变量初始化
-if 'tasks' not in st.session_state:
-    st.session_state.tasks = []  # 存储当前页面创建的任务
 if 'button_clicked' not in st.session_state:
     st.session_state.button_clicked = False
 
-# 获取任务名称
-task_name = st.text_input("请输入任务名称：")
+if 'task_name' not in st.session_state:
+    st.session_state.task_name = ""
+if 'tags' not in st.session_state:
+    st.session_state.tags = None
 
-# 选择数据库中存储的标签
-tags = st.selectbox("选择任务标签：", [tag[0] for tag in get_all_tags()], index=None)
+# 输入框
+task_name = st.text_input("请输入任务名称：",placeholder="task name", value=st.session_state.task_name)
+# 获取所有标签
+all_tags = [tag[0] for tag in get_all_tags()]
+selected_index = None if st.session_state.tags is None else all_tags.index(st.session_state.tags)
+
+# 选择框
+tags = st.selectbox("选择任务标签：", all_tags, index=selected_index, placeholder="tag name")
+
 timer_placeholder = st.empty()
 
 # 开始计时按钮
@@ -54,6 +60,7 @@ if 'start_time' in st.session_state:
                 "持续时间": duration_formatted
             }
             add_task(new_task)
+
             # 清空计时器
             timer_placeholder.empty()
             st.balloons()
