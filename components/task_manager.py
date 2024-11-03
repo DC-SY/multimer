@@ -1,10 +1,12 @@
-import sqlite3
+import pandas as pd
+
 from utils.database import get_connection
 
-def add_task(task_name):
+def add_task(new_task_: dict):
     with get_connection() as conn:
         cursor = conn.cursor()
-        cursor.execute("INSERT INTO tasks (task_name) VALUES (?)", (task_name,))
+        cursor.execute("INSERT INTO tasks (task_name, start_time, end_time, duration, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
+               (new_task_["任务名称"], new_task_["开始时间"].strftime("%Y-%m-%d %H:%M:%S"), new_task_["结束时间"].strftime("%Y-%m-%d %H:%M:%S"), new_task_["持续时间"], pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S"), pd.Timestamp.now().strftime("%Y-%m-%d %H:%M:%S")))
         conn.commit()
 
 def get_display_tasks():
