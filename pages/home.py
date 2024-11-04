@@ -2,8 +2,8 @@ import streamlit as st
 import pandas as pd
 import time
 
-from components.tag_manager import get_all_tags
-from components.task_manager import add_task
+from components.tag_manager import *
+from components.task_manager import *
 
 # Streamlit 页面标题
 st.title("多功能任务计时器")
@@ -19,7 +19,7 @@ if 'tags' not in st.session_state:
 # 输入框
 task_name = st.text_input("请输入任务名称：",placeholder="task name", value=st.session_state.task_name)
 # 获取所有标签
-all_tags = [tag[0] for tag in get_all_tags()]
+all_tags = [tag[0] for tag in get_all_tags_name()]
 selected_index = None if st.session_state.tags is None else all_tags.index(st.session_state.tags)
 
 # 选择框
