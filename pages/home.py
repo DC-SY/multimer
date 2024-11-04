@@ -4,6 +4,7 @@ import time
 
 from components.tag_manager import *
 from components.task_manager import *
+from components.tasks_tags_manager import add_task_tag
 
 # Streamlit 页面标题
 st.title("多功能任务计时器")
@@ -59,8 +60,11 @@ if 'start_time' in st.session_state:
                 "结束时间": pd.Timestamp(end_time, unit='s'),
                 "持续时间": duration
             }
+            # 添加任务到数据库
             add_task(new_task)
-
+            # 添加任务标签记录到数据库
+            print(new_task)
+            add_task_tag(new_task["任务名称"], new_task["任务标签"])
             # 清空计时器
             timer_placeholder.empty()
             st.balloons()

@@ -25,3 +25,9 @@ def get_all_tags():
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM tags")
         return cursor.fetchall()
+
+def get_tag_id(tag_name_: str):
+    with get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT tag_id FROM tags WHERE tag_name = ?", (tag_name_,))
+        return cursor.fetchone()[0]
