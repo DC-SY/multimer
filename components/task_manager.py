@@ -36,15 +36,4 @@ def get_task_id(task_name_: str):
         cursor.execute("SELECT task_id FROM tasks WHERE task_name = ?", (task_name_,))
         return cursor.fetchone()[0]
 
-def get_all_task_tags():
-    with get_connection() as conn:
-        cursor = conn.cursor()
-        cursor.execute('''
-    SELECT tasks.task_name, tags.tag_name
-    FROM task_tags
-    JOIN tasks ON task_tags.task_id = tasks.task_id
-    JOIN tags ON task_tags.tag_id = tags.tag_id
-''')
-        return cursor.fetchall()
-
 
