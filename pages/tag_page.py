@@ -1,4 +1,5 @@
 import streamlit as st
+from altair.vega import autosize
 from st_aggrid import AgGrid, GridOptionsBuilder
 
 from components.tag_manager import get_all_tags

@@ -25,9 +25,10 @@ with tab2:
         df,
         gridOptions=gridOptions,
         enable_enterprise_modules=True,
-        height=600,
+        height=300,
         width='100%',
-        # theme='light',
+        domLayout='autoHeight',
+        fit_columns_on_grid_load=True,
     )
 with tab3:
     st.header("这是第二个标签页: 任务-CRUD")
