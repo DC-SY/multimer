@@ -48,8 +48,8 @@ if 'start_time' in st.session_state:
     if st.button('结束任务'):
         if 'start_time' in st.session_state:
             end_time = time.time()
-            duration = end_time - st.session_state.start_time
-            duration_formatted = time.strftime("%H:%M:%S", time.gmtime(duration))
+            duration = int(end_time - st.session_state.start_time)
+            # duration_formatted = time.strftime("%H:%M:%S", time.gmtime(duration))
 
             # 保存任务信息到数据库
             new_task = {
@@ -57,14 +57,14 @@ if 'start_time' in st.session_state:
                 "任务标签": st.session_state.tags,
                 "开始时间": pd.Timestamp(st.session_state.start_time, unit='s'),
                 "结束时间": pd.Timestamp(end_time, unit='s'),
-                "持续时间": duration_formatted
+                "持续时间": duration
             }
             add_task(new_task)
 
             # 清空计时器
             timer_placeholder.empty()
             st.balloons()
-            st.success(f"任务 '{st.session_state.task_name}' 已结束！持续时间: {duration_formatted}", icon="✅")
+            st.success(f"任务 '{st.session_state.task_name}' 已结束！持续时间: {duration}秒", icon="✅")
             st.session_state.button_clicked = False  # 启用开始按钮
             # 清除 start_time 以结束计时器循环
             del st.session_state.start_time
