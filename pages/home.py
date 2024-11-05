@@ -56,10 +56,11 @@ if 'start_time' in st.session_state:
             new_task = {
                 "任务名称": st.session_state.task_name,
                 "任务标签": st.session_state.tags,
-                "开始时间": pd.Timestamp(st.session_state.start_time, unit='s'),
-                "结束时间": pd.Timestamp(end_time, unit='s'),
+                "开始时间": pd.Timestamp(st.session_state.start_time, unit='s', tz='Asia/Shanghai'),
+                "结束时间": pd.Timestamp(end_time, unit='s', tz='Asia/Shanghai'),
                 "持续时间": duration
             }
+            # you can preview and accept the changes made by copilot in a side-by-side diff
             # 添加任务到数据库
             add_task(new_task)
             # 添加任务标签记录到数据库
