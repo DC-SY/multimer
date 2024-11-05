@@ -82,5 +82,9 @@ if 'start_time' in st.session_state:
         elapsed_time_formatted = time.strftime("%H:%M:%S", time.gmtime(elapsed_time))  # 格式化时间
         # 更新页面上的计时器显示
         timer_placeholder.markdown(f"### 当前任务已进行时间: {elapsed_time_formatted}")
+        timer_placeholder.markdown(f"""
+            > 当前任务已进行时间：
+            > - # *{elapsed_time_formatted}*
+""")
         # 每秒刷新一次
         time.sleep(1)
